@@ -1,1 +1,446 @@
-<html><head><meta content="text/html; charset=UTF-8" http-equiv="content-type"><style type="text/css">ol{margin:0;padding:0}table td,table th{padding:0}.c1{color:#000000;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:11pt;font-family:"Arial";font-style:normal}.c0{padding-top:0pt;padding-bottom:0pt;line-height:1.15;orphans:2;widows:2;text-align:left}.c3{background-color:#ffffff;max-width:451.4pt;padding:72pt 72pt 72pt 72pt}.c2{height:11pt}.title{padding-top:0pt;color:#000000;font-size:26pt;padding-bottom:3pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}.subtitle{padding-top:0pt;color:#666666;font-size:15pt;padding-bottom:16pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}li{color:#000000;font-size:11pt;font-family:"Arial"}p{margin:0;color:#000000;font-size:11pt;font-family:"Arial"}h1{padding-top:20pt;color:#000000;font-size:20pt;padding-bottom:6pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h2{padding-top:18pt;color:#000000;font-size:16pt;padding-bottom:6pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h3{padding-top:16pt;color:#434343;font-size:14pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h4{padding-top:14pt;color:#666666;font-size:12pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h5{padding-top:12pt;color:#666666;font-size:11pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h6{padding-top:12pt;color:#666666;font-size:11pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;font-style:italic;orphans:2;widows:2;text-align:left}</style></head><body class="c3 doc-content"><p class="c0"><span class="c1">&lt;!DOCTYPE html&gt;</span></p><p class="c0"><span class="c1">&lt;html&gt;</span></p><p class="c0"><span class="c1">&nbsp; &lt;head&gt;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &lt;meta charset=&quot;UTF-8&quot; /&gt;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &lt;title&gt;&#30495;&#23526;&#27234;&#22291;&#36556;&#36947;&#21205;&#30059;&#65288;&#26178;&#38291;&#20493;&#29575;&#21487;&#35519;&#65289;&lt;/title&gt;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js&quot;&gt;&lt;/script&gt;</span></p><p class="c0"><span class="c1">&nbsp; &lt;/head&gt;</span></p><p class="c0"><span class="c1">&nbsp; &lt;body&gt;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &lt;script&gt;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; let semiMajorAxisSlider, eccentricitySlider, timeScaleSlider;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; let valueA, valueE, timeScaleValue;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; let labelA, labelE, labelT;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; let resetButton;</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; let angle = 0;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; let G = 1, M = 1;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; let energyData = [];</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; let maxSteps = 20000;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; let recording = true;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; let trail = [];</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; function setup() {</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; createCanvas(1000, 600);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; angleMode(RADIANS);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // --- &#21322;&#24465; a ---</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; labelA = createP(&quot;&#128309; &#21322;&#24465; a&#65288;&#38263;&#21322;&#36600;&#65289;&quot;);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; labelA.position(20, height + 0);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; semiMajorAxisSlider = createSlider(50, 300, 200);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; semiMajorAxisSlider.position(20, height + 30);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; semiMajorAxisSlider.style(&#39;width&#39;, &#39;200px&#39;);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; valueA = createSpan();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; valueA.position(230, height + 30);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // --- &#38626;&#24515;&#29575; e ---</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; labelE = createP(&quot;&#128992; &#38626;&#24515;&#29575; e&#65288;&#27234;&#22291;&#31243;&#24230;&#65289;&quot;);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; labelE.position(20, height + 60);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; eccentricitySlider = createSlider(0, 0.95, 0.6, 0.01);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; eccentricitySlider.position(20, height + 90);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; eccentricitySlider.style(&#39;width&#39;, &#39;200px&#39;);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; valueE = createSpan();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; valueE.position(230, height + 90);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // --- &#37325;&#32622;&#25353;&#37397; ---</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; resetButton = createButton(&quot;&#128257; &#37325;&#32622;&#27169;&#25836;&quot;);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; resetButton.position(20, height + 140);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; resetButton.mousePressed(resetSimulation);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // --- &#26178;&#38291;&#20493;&#29575; Time Scale ---</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; labelT = createP(&quot;&#9201;&#65039; &#26178;&#38291;&#20493;&#29575;&#65288;&#36895;&#24230;&#35519;&#25972;&#65289;&quot;);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; labelT.position(20, height + 180);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; timeScaleSlider = createSlider(10, 50, 10, 1); // &#20462;&#25913;&#28858;10~50</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; timeScaleSlider.position(20, height + 210);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; timeScaleSlider.style(&#39;width&#39;, &#39;200px&#39;);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; timeScaleValue = createSpan();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; timeScaleValue.position(230, height + 210);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; }</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; function draw() {</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; background(10);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // &#35712;&#21462;&#20351;&#29992;&#32773;&#21443;&#25976;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let a = semiMajorAxisSlider.value();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let e = eccentricitySlider.value();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let timeScale = timeScaleSlider.value();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let b = a * sqrt(1 - e * e);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // &#26356;&#26032;&#25991;&#23383;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; valueA.html(`${a} px`);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; valueE.html(`${nf(e, 1, 2)}`);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; timeScaleValue.html(`${nf(timeScale, 1, 1)}x`);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // === &#36556;&#36947;&#33287;&#34892;&#26143; ===</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; push();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; translate(width / 2, height / 2); // &#22826;&#38525;&#22312;&#30059;&#24067;&#20013;&#22830;&#65288;&#24038;&#28966;&#40670;&#65289;</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let r = (a * (1 - e * e)) / (1 + e * cos(angle));</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let x = r * cos(angle);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let y = r * sin(angle);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // &#35352;&#37636;&#36556;&#36321;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; trail.push({ x, y });</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; if (trail.length &gt; maxSteps) trail.shift();</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // --- &#21443;&#32771;&#27234;&#22291;&#36650;&#24275; ---</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; noFill();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; stroke(100, 100, 100, 80);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; ellipse(-a * e, 0, 2 * a, 2 * b);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // --- &#34892;&#26143;&#36556;&#36321;&#32218; ---</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; noFill();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; stroke(0, 150, 255);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; beginShape();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; for (let p of trail) vertex(p.x, p.y);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; endShape();</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // --- &#22826;&#38525; ---</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; noStroke();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; fill(255, 204, 0);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; ellipse(0, 0, 30, 30);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // --- &#34892;&#26143; ---</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; fill(100, 200, 255);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; ellipse(x, y, 16, 16);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // --- &#36895;&#24230;&#21521;&#37327; ---</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; stroke(255, 0, 0);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let tangentX = -sin(angle);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let tangentY = cos(angle);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let v = sqrt(G * M * (2 / r - 1 / a));</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let mag = v * 10; // &#25918;&#22823;&#20493;&#29575;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; line(x, y, x + tangentX * mag, y + tangentY * mag);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; pop();</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // === &#33021;&#37327;&#35336;&#31639; ===</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let KE = 0.5 * v * v;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let PE = -G * M / r;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let E = KE + PE;</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; if (recording &amp;&amp; energyData.length &lt; maxSteps) {</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; energyData.push({ KE, PE, E });</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; } else if (energyData.length &gt;= maxSteps) {</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; recording = false;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; }</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; drawEnergyGraph();</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // &#9989; &#26681;&#25818;&#35282;&#21205;&#37327;&#25913;&#35722;&#35282;&#24230;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let h = sqrt(G * M * a * (1 - e * e));</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let dTheta = h / (r * r);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; angle += dTheta * timeScale;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; }</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; function drawEnergyGraph() {</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; push();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; translate(width * 0.55, 50);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let graphW = 400;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let graphH = 200;</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // &#32972;&#26223;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; noStroke();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; fill(20, 20, 30, 180);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; rect(0, 0, graphW, graphH, 8);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // &#34395;&#32218;&#32972;&#26223;&#32218;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; stroke(120);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; strokeWeight(0.5);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; for (let y = 0; y &lt;= graphH; y += 40) {</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; drawingContext.setLineDash([5, 5]);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; line(0, y, graphW, y);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; }</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; drawingContext.setLineDash([]);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // &#27161;&#38988;&#33287;&#36600;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; noStroke();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; fill(255);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; textSize(12);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; text(&quot;&#33021;&#37327;&#22294;&#65288;&#21934;&#20301;&#65306;&#28966;&#32819;&#65289;&quot;, 10, -10);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; text(&quot;&#26178;&#38291;&#65288;frame&#65289;&quot;, graphW / 2 - 30, graphH + 20);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // &#33021;&#37327;&#31684;&#22285;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let minY = Infinity;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let maxY = -Infinity;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; for (let d of energyData) {</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; minY = min(minY, d.PE);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxY = max(maxY, d.KE);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; }</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // &#21152;&#19978; y = 0 &#34395;&#32218;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; if (minY &lt; 0 &amp;&amp; maxY &gt; 0) {</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; let zeroY = map(0, minY, maxY, graphH, 0);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; stroke(200);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; strokeWeight(1);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; drawingContext.setLineDash([3, 3]);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; line(0, zeroY, graphW, zeroY);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; drawingContext.setLineDash([]);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; noStroke();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; fill(200);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; textAlign(RIGHT);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; text(&quot;0&quot;, -5, zeroY + 4);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; }</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // &#25976;&#20540;&#27161;&#31034;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; fill(150);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; noStroke();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; textAlign(RIGHT);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; text(nf(maxY, 1, 2), -5, 10);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; text(nf(minY, 1, 2), -5, graphH - 2);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // &#30059;&#33021;&#37327;&#26354;&#32218;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; drawEnergyLineSmooth(energyData, &quot;KE&quot;, color(0, 150, 255), minY, maxY, graphW, graphH);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; drawEnergyLineSmooth(energyData, &quot;PE&quot;, color(255, 100, 100), minY, maxY, graphW, graphH);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; drawEnergyLineSmooth(energyData, &quot;E&quot;, color(180, 100, 255), minY, maxY, graphW, graphH);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; // &#22294;&#20363;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let legendX = graphW + 30;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; let legendY = 10;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; textSize(12);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; textAlign(LEFT);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; drawLegendItem(legendX, legendY, color(0, 150, 255), &quot;&#21205;&#33021; KE&#65288;&#34253;&#65289;&quot;);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; drawLegendItem(legendX, legendY + 20, color(255, 100, 100), &quot;&#20301;&#33021; PE&#65288;&#32005;&#65289;&quot;);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; drawLegendItem(legendX, legendY + 40, color(180, 100, 255), &quot;&#32317;&#33021;&#37327; E&#65288;&#32043;&#65289;&quot;);</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; pop();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; }</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; function drawEnergyLineSmooth(data, key, col, minY, maxY, w, h) {</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; noFill();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; stroke(col);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; strokeWeight(1.5);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; beginShape();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; for (let i = 0; i &lt; data.length; i++) {</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; let x = map(i, 0, data.length - 1, 0, w);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; let y = map(data[i][key], minY, maxY, h, 0);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; curveVertex(x, y);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; }</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; endShape();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; }</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; function drawLegendItem(x, y, col, label) {</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; fill(col);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; noStroke();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; rect(x, y, 12, 12);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; fill(255);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; noStroke();</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; text(label, x + 18, y + 10);</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; }</span></p><p class="c0 c2"><span class="c1"></span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; function resetSimulation() {</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; energyData = [];</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; trail = [];</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; angle = 0;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; &nbsp; recording = true;</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &nbsp; }</span></p><p class="c0"><span class="c1">&nbsp; &nbsp; &lt;/script&gt;</span></p><p class="c0"><span class="c1">&nbsp; &lt;/body&gt;</span></p><p class="c0"><span class="c1">&lt;/html&gt;</span></p></body></html>
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta charset="UTF-8" />
+
+    <title>真實橢圓軌道動畫（時間倍率可調）</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <script>
+
+      let semiMajorAxisSlider, eccentricitySlider, timeScaleSlider;
+
+      let valueA, valueE, timeScaleValue;
+
+      let labelA, labelE, labelT;
+
+      let resetButton;
+
+
+      let angle = 0;
+
+      let G = 1, M = 1;
+
+      let energyData = [];
+
+      let maxSteps = 20000;
+
+      let recording = true;
+
+      let trail = [];
+
+
+      function setup() {
+
+        createCanvas(1000, 600);
+
+        angleMode(RADIANS);
+
+
+        // --- 半徑 a ---
+
+        labelA = createP("🔵 半徑 a（長半軸）");
+
+        labelA.position(20, height + 0);
+
+
+        semiMajorAxisSlider = createSlider(50, 300, 200);
+
+        semiMajorAxisSlider.position(20, height + 30);
+
+        semiMajorAxisSlider.style('width', '200px');
+
+
+        valueA = createSpan();
+
+        valueA.position(230, height + 30);
+
+
+        // --- 離心率 e ---
+
+        labelE = createP("🟠 離心率 e（橢圓程度）");
+
+        labelE.position(20, height + 60);
+
+
+        eccentricitySlider = createSlider(0, 0.95, 0.6, 0.01);
+
+        eccentricitySlider.position(20, height + 90);
+
+        eccentricitySlider.style('width', '200px');
+
+
+        valueE = createSpan();
+
+        valueE.position(230, height + 90);
+
+
+        // --- 重置按鈕 ---
+
+        resetButton = createButton("🔁 重置模擬");
+
+        resetButton.position(20, height + 140);
+
+        resetButton.mousePressed(resetSimulation);
+
+
+        // --- 時間倍率 Time Scale ---
+
+        labelT = createP("⏱️ 時間倍率（速度調整）");
+
+        labelT.position(20, height + 180);
+
+
+        timeScaleSlider = createSlider(10, 50, 10, 1); // 修改為10~50
+
+        timeScaleSlider.position(20, height + 210);
+
+        timeScaleSlider.style('width', '200px');
+
+
+        timeScaleValue = createSpan();
+
+        timeScaleValue.position(230, height + 210);
+
+      }
+
+
+      function draw() {
+
+        background(10);
+
+
+        // 讀取使用者參數
+
+        let a = semiMajorAxisSlider.value();
+
+        let e = eccentricitySlider.value();
+
+        let timeScale = timeScaleSlider.value();
+
+        let b = a * sqrt(1 - e * e);
+
+
+        // 更新文字
+
+        valueA.html(`${a} px`);
+
+        valueE.html(`${nf(e, 1, 2)}`);
+
+        timeScaleValue.html(`${nf(timeScale, 1, 1)}x`);
+
+
+        // === 軌道與行星 ===
+
+        push();
+
+        translate(width / 2, height / 2); // 太陽在畫布中央（左焦點）
+
+
+        let r = (a * (1 - e * e)) / (1 + e * cos(angle));
+
+        let x = r * cos(angle);
+
+        let y = r * sin(angle);
+
+
+        // 記錄軌跡
+
+        trail.push({ x, y });
+
+        if (trail.length > maxSteps) trail.shift();
+
+
+        // --- 參考橢圓輪廓 ---
+
+        noFill();
+
+        stroke(100, 100, 100, 80);
+
+        ellipse(-a * e, 0, 2 * a, 2 * b);
+
+
+        // --- 行星軌跡線 ---
+
+        noFill();
+
+        stroke(0, 150, 255);
+
+        beginShape();
+
+        for (let p of trail) vertex(p.x, p.y);
+
+        endShape();
+
+
+        // --- 太陽 ---
+
+        noStroke();
+
+        fill(255, 204, 0);
+
+        ellipse(0, 0, 30, 30);
+
+
+        // --- 行星 ---
+
+        fill(100, 200, 255);
+
+        ellipse(x, y, 16, 16);
+
+
+        // --- 速度向量 ---
+
+        stroke(255, 0, 0);
+
+        let tangentX = -sin(angle);
+
+        let tangentY = cos(angle);
+
+        let v = sqrt(G * M * (2 / r - 1 / a));
+
+        let mag = v * 10; // 放大倍率
+
+        line(x, y, x + tangentX * mag, y + tangentY * mag);
+
+        pop();
+
+
+        // === 能量計算 ===
+
+        let KE = 0.5 * v * v;
+
+        let PE = -G * M / r;
+
+        let E = KE + PE;
+
+
+        if (recording && energyData.length < maxSteps) {
+
+          energyData.push({ KE, PE, E });
+
+        } else if (energyData.length >= maxSteps) {
+
+          recording = false;
+
+        }
+
+
+        drawEnergyGraph();
+
+
+        // ✅ 根據角動量改變角度
+
+        let h = sqrt(G * M * a * (1 - e * e));
+
+        let dTheta = h / (r * r);
+
+        angle += dTheta * timeScale;
+
+      }
+
+
+      function drawEnergyGraph() {
+
+        push();
+
+        translate(width * 0.55, 50);
+
+        let graphW = 400;
+
+        let graphH = 200;
+
+
+        // 背景
+
+        noStroke();
+
+        fill(20, 20, 30, 180);
+
+        rect(0, 0, graphW, graphH, 8);
+
+
+        // 虛線背景線
+
+        stroke(120);
+
+        strokeWeight(0.5);
+
+        for (let y = 0; y <= graphH; y += 40) {
+
+          drawingContext.setLineDash([5, 5]);
+
+          line(0, y, graphW, y);
+
+        }
+
+        drawingContext.setLineDash([]);
+
+
+        // 標題與軸
+
+        noStroke();
+
+        fill(255);
+
+        textSize(12);
+
+        text("能量圖（單位：焦耳）", 10, -10);
+
+        text("時間（frame）", graphW / 2 - 30, graphH + 20);
+
+
+        // 能量範圍
+
+        let minY = Infinity;
+
+        let maxY = -Infinity;
+
+        for (let d of energyData) {
+
+          minY = min(minY, d.PE);
+
+          maxY = max(maxY, d.KE);
+
+        }
+
+
+        // 加上 y = 0 虛線
+
+        if (minY < 0 && maxY > 0) {
+
+          let zeroY = map(0, minY, maxY, graphH, 0);
+
+          stroke(200);
+
+          strokeWeight(1);
+
+          drawingContext.setLineDash([3, 3]);
+
+          line(0, zeroY, graphW, zeroY);
+
+          drawingContext.setLineDash([]);
+
+
+          noStroke();
+
+          fill(200);
+
+          textAlign(RIGHT);
+
+          text("0", -5, zeroY + 4);
+
+        }
+
+
+        // 數值標示
+
+        fill(150);
+
+        noStroke();
+
+        textAlign(RIGHT);
+
+        text(nf(maxY, 1, 2), -5, 10);
+
+        text(nf(minY, 1, 2), -5, graphH - 2);
+
+
+        // 畫能量曲線
+
+        drawEnergyLineSmooth(energyData, "KE", color(0, 150, 255), minY, maxY, graphW, graphH);
+
+        drawEnergyLineSmooth(energyData, "PE", color(255, 100, 100), minY, maxY, graphW, graphH);
+
+        drawEnergyLineSmooth(energyData, "E", color(180, 100, 255), minY, maxY, graphW, graphH);
+
+
+        // 圖例
+
+        let legendX = graphW + 30;
+
+        let legendY = 10;
+
+        textSize(12);
+
+        textAlign(LEFT);
+
+        drawLegendItem(legendX, legendY, color(0, 150, 255), "動能 KE（藍）");
+
+        drawLegendItem(legendX, legendY + 20, color(255, 100, 100), "位能 PE（紅）");
+
+        drawLegendItem(legendX, legendY + 40, color(180, 100, 255), "總能量 E（紫）");
+
+
+        pop();
+
+      }
+
+
+      function drawEnergyLineSmooth(data, key, col, minY, maxY, w, h) {
+
+        noFill();
+
+        stroke(col);
+
+        strokeWeight(1.5);
+
+        beginShape();
+
+        for (let i = 0; i < data.length; i++) {
+
+          let x = map(i, 0, data.length - 1, 0, w);
+
+          let y = map(data[i][key], minY, maxY, h, 0);
+
+          curveVertex(x, y);
+
+        }
+
+        endShape();
+
+      }
+
+
+      function drawLegendItem(x, y, col, label) {
+
+        fill(col);
+
+        noStroke();
+
+        rect(x, y, 12, 12);
+
+        fill(255);
+
+        noStroke();
+
+        text(label, x + 18, y + 10);
+
+      }
+
+
+      function resetSimulation() {
+
+        energyData = [];
+
+        trail = [];
+
+        angle = 0;
+
+        recording = true;
+
+      }
+
+    </script>
+
+  </body>
+
+</html>
