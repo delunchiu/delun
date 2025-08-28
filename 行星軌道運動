@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>真實橢圓軌道動畫（時間倍率可調）</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  </head>
+  <body>
+    <script>
+      let semiMajorAxisSlider, eccentricitySlider, timeScaleSlider;
+      let valueA, valueE, timeScaleValue;
+      let labelA, labelE, labelT;
+      let resetButton;
+
+      let angle = 0;
+      let G = 1, M = 1;
+      let energyData = [];
+      let maxSteps = 20000;
+      let recording = true;
+      let trail = [];
+
+      function setup() {
+        createCanvas(1000, 600);
+        angleMode(RADIANS);
+
+        // --- 半徑 a ---
+        labelA = createP("🔵 半徑 a（長半軸）");
+        labelA.position(20, height + 0);
+
+        semiMajorAxisSlider = createSlider(50, 300, 200);
+        semiMajorAxisSlider.position(20, height + 30);
+        semiMajorAxisSlider.style('width', '200px');
+
+        valueA = createSpan();
+        valueA.position(230, height + 30);
+
+        // --- 離心率 e ---
+        labelE = createP("🟠 離心率 e（橢圓程度）");
+        labelE.position(20, height + 60);
+
+        eccentricitySlider = createSlider(0, 0.95, 0.6, 0.01);
+        eccentricitySlider.position(20, height + 90);
+        eccentricitySlider.style('width', '200px');
+
+        valueE = createSpan();
+        valueE.position(230, height + 90);
+
+        // --- 重置按鈕 ---
+        resetButton = createButton("🔁 重置模擬");
+        resetButton.position(20, height + 140);
+        resetButton.mousePressed(resetSimulation);
+
+        // --- 時間倍率 Time Scale ---
+        labelT = createP("⏱️ 時間倍率（速度調整）");
+        labelT.position(20, height + 180);
+
+        timeScaleSlider = createSlider(10, 50, 10, 1); // 修改為10~50
+        timeScaleSlider.position(20, height + 210);
+        timeScaleSlider.style('width', '200px');
+
+        timeScaleValue = createSpan();
+        timeScaleValue.position(230, height + 210);
+      }
+
+      function draw() {
+        background(10);
+
+        // 讀取使用者參數
+        let a = semiMajorAxisSlider.value();
+        let e = eccentricitySlider.value();
+        let timeScale = timeScaleSlider.value();
+        let b = a * sqrt(1 - e * e);
+
+        // 更新文字
+        valueA.html(`${a} px`);
+        valueE.html(`${nf(e, 1, 2)}`);
+        timeScaleValue.html(`${nf(timeScale, 1, 1)}x`);
+
+        // === 軌道與行星 ===
+        push();
+        translate(width / 2, height / 2); // 太陽在畫布中央（左焦點）
+
+        let r = (a * (1 - e * e)) / (1 + e * cos(angle));
+        let x = r * cos(angle);
+        let y = r * sin(angle);
+
+        // 記錄軌跡
+        trail.push({ x, y });
+        if (trail.length > maxSteps) trail.shift();
+
+        // --- 參考橢圓輪廓 ---
+        noFill();
+        stroke(100, 100, 100, 80);
+        ellipse(-a * e, 0, 2 * a, 2 * b);
+
+        // --- 行星軌跡線 ---
+        noFill();
+        stroke(0, 150, 255);
+        beginShape();
+        for (let p of trail) vertex(p.x, p.y);
+        endShape();
+
+        // --- 太陽 ---
+        noStroke();
+        fill(255, 204, 0);
+        ellipse(0, 0, 30, 30);
+
+        // --- 行星 ---
+        fill(100, 200, 255);
+        ellipse(x, y, 16, 16);
+
+        // --- 速度向量 ---
+        stroke(255, 0, 0);
+        let tangentX = -sin(angle);
+        let tangentY = cos(angle);
+        let v = sqrt(G * M * (2 / r - 1 / a));
+        let mag = v * 10; // 放大倍率
+        line(x, y, x + tangentX * mag, y + tangentY * mag);
+        pop();
+
+        // === 能量計算 ===
+        let KE = 0.5 * v * v;
+        let PE = -G * M / r;
+        let E = KE + PE;
+
+        if (recording && energyData.length < maxSteps) {
+          energyData.push({ KE, PE, E });
+        } else if (energyData.length >= maxSteps) {
+          recording = false;
+        }
+
+        drawEnergyGraph();
+
+        // ✅ 根據角動量改變角度
+        let h = sqrt(G * M * a * (1 - e * e));
+        let dTheta = h / (r * r);
+        angle += dTheta * timeScale;
+      }
+
+      function drawEnergyGraph() {
+        push();
+        translate(width * 0.55, 50);
+        let graphW = 400;
+        let graphH = 200;
+
+        // 背景
+        noStroke();
+        fill(20, 20, 30, 180);
+        rect(0, 0, graphW, graphH, 8);
+
+        // 虛線背景線
+        stroke(120);
+        strokeWeight(0.5);
+        for (let y = 0; y <= graphH; y += 40) {
+          drawingContext.setLineDash([5, 5]);
+          line(0, y, graphW, y);
+        }
+        drawingContext.setLineDash([]);
+
+        // 標題與軸
+        noStroke();
+        fill(255);
+        textSize(12);
+        text("能量圖（單位：焦耳）", 10, -10);
+        text("時間（frame）", graphW / 2 - 30, graphH + 20);
+
+        // 能量範圍
+        let minY = Infinity;
+        let maxY = -Infinity;
+        for (let d of energyData) {
+          minY = min(minY, d.PE);
+          maxY = max(maxY, d.KE);
+        }
+
+        // 加上 y = 0 虛線
+        if (minY < 0 && maxY > 0) {
+          let zeroY = map(0, minY, maxY, graphH, 0);
+          stroke(200);
+          strokeWeight(1);
+          drawingContext.setLineDash([3, 3]);
+          line(0, zeroY, graphW, zeroY);
+          drawingContext.setLineDash([]);
+
+          noStroke();
+          fill(200);
+          textAlign(RIGHT);
+          text("0", -5, zeroY + 4);
+        }
+
+        // 數值標示
+        fill(150);
+        noStroke();
+        textAlign(RIGHT);
+        text(nf(maxY, 1, 2), -5, 10);
+        text(nf(minY, 1, 2), -5, graphH - 2);
+
+        // 畫能量曲線
+        drawEnergyLineSmooth(energyData, "KE", color(0, 150, 255), minY, maxY, graphW, graphH);
+        drawEnergyLineSmooth(energyData, "PE", color(255, 100, 100), minY, maxY, graphW, graphH);
+        drawEnergyLineSmooth(energyData, "E", color(180, 100, 255), minY, maxY, graphW, graphH);
+
+        // 圖例
+        let legendX = graphW + 30;
+        let legendY = 10;
+        textSize(12);
+        textAlign(LEFT);
+        drawLegendItem(legendX, legendY, color(0, 150, 255), "動能 KE（藍）");
+        drawLegendItem(legendX, legendY + 20, color(255, 100, 100), "位能 PE（紅）");
+        drawLegendItem(legendX, legendY + 40, color(180, 100, 255), "總能量 E（紫）");
+
+        pop();
+      }
+
+      function drawEnergyLineSmooth(data, key, col, minY, maxY, w, h) {
+        noFill();
+        stroke(col);
+        strokeWeight(1.5);
+        beginShape();
+        for (let i = 0; i < data.length; i++) {
+          let x = map(i, 0, data.length - 1, 0, w);
+          let y = map(data[i][key], minY, maxY, h, 0);
+          curveVertex(x, y);
+        }
+        endShape();
+      }
+
+      function drawLegendItem(x, y, col, label) {
+        fill(col);
+        noStroke();
+        rect(x, y, 12, 12);
+        fill(255);
+        noStroke();
+        text(label, x + 18, y + 10);
+      }
+
+      function resetSimulation() {
+        energyData = [];
+        trail = [];
+        angle = 0;
+        recording = true;
+      }
+    </script>
+  </body>
+</html>
